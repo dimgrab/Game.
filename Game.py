@@ -16,7 +16,8 @@ def move_wrap(obj, move):
 def prepare_and_start():
     canvas.delete("all")
     label.config(text="Найди выход.")
-    global player, exit, fires, enemies, N_ENEMIES, n_fires
+    global player, exit, fires, enemies, N_ENEMIES, n_fires, h
+    h = h1
     player_pos = (random.randint(1, N_X - 1) * step, random.randint(1, N_Y - 1) * step)
     exit_pos = (random.randint(1, N_X - 1) * step, random.randint(1, N_Y - 1) * step)
     player = canvas.create_image(player_pos[0], player_pos[1], image=player_pic, anchor="nw")
@@ -25,7 +26,7 @@ def prepare_and_start():
     for i in range(n_fires):
         fire_pos = (random.randint(1, N_X - 1) * step, random.randint(1, N_Y - 1) * step)
         fire = canvas.create_image(fire_pos[0], fire_pos[1], image=fire_pic, anchor="nw")
-        fires.append(fire)    
+        fires.append(fire)
     master.bind("<KeyPress>", key_pressed)
     enemies = []
     for i in range(N_ENEMIES):
@@ -90,7 +91,7 @@ def key_pressed(event):
     check_move()
     
 N_X, N_Y, step = 10, 10, 60
-N_ENEMIES, n_fires, h = 4, 9, 1
+N_ENEMIES, n_fires, h1 = 4, 9, 1
 print("На 1 сложности 3 врага, 3 препятствия и 6 единиц здоровья.")
 print("На 2 сложности 6 врагов, 6 препятствий и 3 единицы здоровья.")
 print("На 3 сложности 9 врагов, 9 препятствий и 1 еденица здоровья.")
@@ -98,13 +99,13 @@ print("Если сложность не указана, то в игре буд�
 print('Вы можете указать другое количество врагов, препятствий и здоровья, введя "д".')
 s = input("Введите сложность(1, 2, 3, д). ")
 if s == "1":
-    N_ENEMIES, n_fires, h = 3, 3, 6
+    N_ENEMIES, n_fires, h1 = 3, 3, 6
 if s == "2":
-    N_ENEMIES, n_fires, h = 6, 6, 3
+    N_ENEMIES, n_fires, h1 = 6, 6, 3
 if s == "3":
     N_ENEMIES = 9
 if s == "д":
-    N_ENEMIES, n_fires, h = int(input("Введите количество врагов. ")), int(input("Введите количество препятствий. ")), int(input("Введите количество здоровья. "))
+    N_ENEMIES, n_fires, h1 = int(input("Введите количество врагов. ")), int(input("Введите количество препятствий. ")), int(input("Введите количество здоровья. "))
 master = tkinter.Tk()
 player_pic = tkinter.PhotoImage(file="2.gif")
 exit_pic = tkinter.PhotoImage(file="3.gif")
