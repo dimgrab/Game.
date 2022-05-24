@@ -15,24 +15,38 @@ def move_wrap(obj, move):
     canvas.coords(obj, o_c)
 def prepare_and_start():
     canvas.delete("all")
-    label.config(text="Найди выход.")
     global player, exit, fires, enemies, N_ENEMIES, n_fires, h
     h = h1
+    c = set()
     player_pos = (random.randint(1, N_X - 1) * step, random.randint(1, N_Y - 1) * step)
-    exit_pos = (random.randint(1, N_X - 1) * step, random.randint(1, N_Y - 1) * step)
+    c.add(player_pos)
+    while True:
+        exit_pos = (random.randint(1, N_X - 1) * step, random.randint(1, N_Y - 1) * step)
+        if exit_pos not in c:
+            c.add(exit_pos)
+            break
     player = canvas.create_image(player_pos[0], player_pos[1], image=player_pic, anchor="nw")
     exit = canvas.create_image(exit_pos[0], exit_pos[1], image=exit_pic, anchor="nw")
-    fires=[]
+    fires = []
     for i in range(n_fires):
-        fire_pos = (random.randint(1, N_X - 1) * step, random.randint(1, N_Y - 1) * step)
+        while True:
+            fire_pos = (random.randint(1, N_X - 1) * step, random.randint(1, N_Y - 1) * step)
+            if fire_pos not in c:
+                c.add(fire_pos)
+                break
         fire = canvas.create_image(fire_pos[0], fire_pos[1], image=fire_pic, anchor="nw")
-        fires.append(fire)
-    master.bind("<KeyPress>", key_pressed)
+        fires.append(fire)    
     enemies = []
     for i in range(N_ENEMIES):
-        enemy_pos = (random.randint(0, N_X - 1) * step, random.randint(0, N_Y - 1) * step)
+        while True:
+            enemy_pos = (random.randint(0, N_X - 1) * step, random.randint(0, N_Y - 1) * step)
+            if enemy_pos not in c:
+                c.add(enemy_pos)
+                break
         enemy = canvas.create_image(enemy_pos, image=enemy_pic, anchor='nw')
         enemies.append((enemy, random.choice([vsi, always_right, random_move])))
+    label.config(text="Найдите выход.")
+    master.bind("<KeyPress>", key_pressed)
     
 def always_right(a):
     return (step, 0)
@@ -111,6 +125,7 @@ player_pic = tkinter.PhotoImage(file="2.gif")
 exit_pic = tkinter.PhotoImage(file="3.gif")
 fire_pic = tkinter.PhotoImage(file="1.gif")
 enemy_pic = tkinter.PhotoImage(file="enemy_pic.gif")
+
 canvas = tkinter.Canvas(master, bg="white", height=step * N_Y, width=step * N_X)
 canvas.pack()
 restart = tkinter.Button(master, text="Начать играть.", command=prepare_and_start)
