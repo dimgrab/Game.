@@ -16,19 +16,17 @@ def move_wrap(obj, move):
 def prepare_and_start():
     canvas.delete("all")
     label.config(text="Найди выход.")
-    global player, exit, fires, enemies
+    global player, exit, fires, enemies, N_ENEMIES, n_fires
     player_pos = (random.randint(1, N_X - 1) * step, random.randint(1, N_Y - 1) * step)
     exit_pos = (random.randint(1, N_X - 1) * step, random.randint(1, N_Y - 1) * step)
     player = canvas.create_image(player_pos[0], player_pos[1], image=player_pic, anchor="nw")
     exit = canvas.create_image(exit_pos[0], exit_pos[1], image=exit_pic, anchor="nw")
-    n_fires = 9
     fires=[]
     for i in range(n_fires):
         fire_pos = (random.randint(1, N_X - 1) * step, random.randint(1, N_Y - 1) * step)
         fire = canvas.create_image(fire_pos[0], fire_pos[1], image=fire_pic, anchor="nw")
         fires.append(fire)    
     master.bind("<KeyPress>", key_pressed)
-    N_ENEMIES = 4
     enemies = []
     for i in range(N_ENEMIES):
         enemy_pos = (random.randint(0, N_X - 1) * step, random.randint(0, N_Y - 1) * step)
@@ -57,21 +55,26 @@ def vsi(e_c):
         a = a + (0,)
     return a
 def do_nothing(event):
-    if event.keysym == "p":
-        prepare_and_start()
+    pass
 
 def check_move():
+    global h
     if canvas.coords(player) == canvas.coords(exit):
         label.config(text="Победа!")
         master.bind("<KeyPress>", do_nothing)
     for f in fires:
         if canvas.coords(f) == canvas.coords(player):
-            label.config(text="Ты проиграл!")
-            master.bind("<KeyPress>", do_nothing)
+            h = h - 1
+            # label.config(text="Ты проиграл!")
+            # master.bind("<KeyPress>", do_nothing)
     for e in enemies:
         if canvas.coords(player) == canvas.coords(e[0]):
-            label.config(text="Ты проиграл.")
-            master.bind("<KeyPress>", do_nothing)
+            h = h - 1
+            # label.config(text="Ты проиграл.")
+            # master.bind("<KeyPress>", do_nothing)
+    if h <= 0:
+        label.config(text="Ты проиграл!")
+        master.bind("<KeyPress>", do_nothing)
 def key_pressed(event):
     if event.keysym == 'Up':
         move_wrap(player, (0, -step))
@@ -81,16 +84,27 @@ def key_pressed(event):
         move_wrap(player, (step, 0))
     if event.keysym == "Left":
         move_wrap(player, (-step, 0))
-    if event.keysym == "g":
-        prepare_and_start()
     for enemy in enemies:
-        direction = enemy[1](canvas.coords(enemy[0])) # вызвать функцию перемещения у "врага"
-        move_wrap(enemy[0], direction) # произвести  перемещение    
+        direction = enemy[1](canvas.coords(enemy[0]))
+        move_wrap(enemy[0], direction)
     check_move()
-
-step = 60
-N_X = 10
-N_Y = 10
+    
+N_X, N_Y, step = 10, 10, 60
+N_ENEMIES, n_fires, h = 4, 9, 1
+print("На 1 сложности 3 врага, 3 препятствия и 6 единиц здоровья.")
+print("На 2 сложности 6 врагов, 6 препятствий и 3 единицы здоровья.")
+print("На 3 сложности 9 врагов, 9 препятствий и 1 еденица здоровья.")
+print("Если сложность не указана, то в игре будет 4 врага, 9 препятствий и 1 единица здоровья.")
+print('Вы можете указать другое количество врагов, препятствий и здоровья, введя "д".')
+s = input("Введите сложность(1, 2, 3, д). ")
+if s == "1":
+    N_ENEMIES, n_fires, h = 3, 3, 6
+if s == "2":
+    N_ENEMIES, n_fires, h = 6, 6, 3
+if s == "3":
+    N_ENEMIES = 9
+if s == "д":
+    N_ENEMIES, n_fires, h = int(input("Введите количество врагов. ")), int(input("Введите количество препятствий. ")), int(input("Введите количество здоровья. "))
 master = tkinter.Tk()
 player_pic = tkinter.PhotoImage(file="2.gif")
 exit_pic = tkinter.PhotoImage(file="3.gif")
