@@ -1,7 +1,7 @@
 import tkinter
 import random
 
-def move_wrap(obj, move):
+def move_wrap(obj, move):   # функция движения объекта по полю
     canvas.move(obj, move[0], move[1])
     o_c = canvas.coords(obj)
     if o_c[1] < 0:
@@ -16,8 +16,8 @@ def move_wrap(obj, move):
 def prepare_and_start():
     canvas.delete("all")
     global player, exit, fires, enemies, N_ENEMIES, n_fires, h
-    h = h1
-    c = set()
+    h = h1   # задание количества жизней
+    c = set()   # множество занятых на поле позицый
     player_pos = (random.randint(1, N_X - 1) * step, random.randint(1, N_Y - 1) * step)
     c.add(player_pos)
     while True:
@@ -48,13 +48,13 @@ def prepare_and_start():
     label.config(text="Найдите выход.")
     master.bind("<KeyPress>", key_pressed)
     
-def always_right(a):
+def always_right(a):   # функция для движения врага всегда вправо
     return (step, 0)
-def always_left(a):
+def always_left(a):    # функция для движения врага всегда влево
     return (-step, 0)
-def random_move(a):
+def random_move(a):    # функция для движения врага в случайном направлении
     return random.choice([(step, 0), (-step, 0), (0, step), (0, -step)])
-def vsi(e_c):
+def vsi(e_c):   # функция движения в сторону игрока.
     p_c = canvas.coords(player)
     if p_c[0] - e_c[0] < 0:
         a = (-step,)
@@ -72,7 +72,7 @@ def vsi(e_c):
 def do_nothing(event):
     pass
 
-def check_move():
+def check_move():   # функция для проверки перемещения игрока.
     global h
     if canvas.coords(player) == canvas.coords(exit):
         label.config(text="Победа!")
@@ -80,15 +80,11 @@ def check_move():
     for f in fires:
         if canvas.coords(f) == canvas.coords(player):
             h = h - 1
-            # label.config(text="Ты проиграл!")
-            # master.bind("<KeyPress>", do_nothing)
     for e in enemies:
         if canvas.coords(player) == canvas.coords(e[0]):
             h = h - 1
-            # label.config(text="Ты проиграл.")
-            # master.bind("<KeyPress>", do_nothing)
     if h <= 0:
-        label.config(text="Ты проиграл!")
+        label.config(text="Вы проиграли!")
         master.bind("<KeyPress>", do_nothing)
 def key_pressed(event):
     if event.keysym == 'Up':
@@ -112,6 +108,7 @@ print("На 3 сложности 9 врагов, 9 препятствий и 1 �
 print("Если сложность не указана, то в игре будет 4 врага, 9 препятствий и 1 единица здоровья.")
 print('Вы можете указать другое количество врагов, препятствий и здоровья, введя "д".')
 s = input("Введите сложность(1, 2, 3, д). ")
+# h1 - количество жизней на даннном уровне сложности
 if s == "1":
     N_ENEMIES, n_fires, h1 = 3, 3, 6
 if s == "2":
